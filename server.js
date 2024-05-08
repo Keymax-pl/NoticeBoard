@@ -28,7 +28,6 @@ app.use(express.static(path.join(__dirname, '/public')));
 // add routes
 app.use('/api', require('./routes/ads.routes'));
 app.use('/auth', require('./routes/auth.routes'));
-//app.use('/api', require('./routes/users.routes'));
 
 // at any other Link
 app.get('*', (req, res) => {
