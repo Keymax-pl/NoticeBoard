@@ -12,7 +12,7 @@ const authMiddleware = async (req, res, next) => {
       // if session is not found
       // return 401 status and message
       if (!sessionRecord)
-        return res.status(401).send({ message: 'You are not authorized' });
+        return res.status(401).send({ message: 'You are not authorized 1' });
 
       // if session is found, parse it and set user in req.session
       const sessionData = JSON.parse(sessionRecord.session);
@@ -24,7 +24,8 @@ const authMiddleware = async (req, res, next) => {
       next();
     }
     catch (err) {
-      return res.status(401).send({ message: 'You are not authorized' });
+      console.error(err);
+      return res.status(401).send({ message: 'You are not authorized 2' });
     }
 
   }

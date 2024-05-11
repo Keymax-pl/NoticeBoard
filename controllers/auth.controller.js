@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
         return res.status(409).send({ message: 'User with this login already exists' })
       }
 
-      const user = await User.create({ login, password: await bcrypt.hash(password, 10), avatar: req.file.filename });
+      const user = await User.create({ login, password: await bcrypt.hash(password, 10), avatar: req.file.filename, phoneNumber});
       res.status(200).send({ message: 'User created successfully' + ' ' + user.login });
 
     } else {
@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
   }
   catch (err) {
     res.status(500).send({ message: err });
-  };
+  }
 
 };
 
@@ -49,7 +49,9 @@ exports.login = async (req, res) => {
           res.status(400).send({ message:'Login or password is incorrect'});
         }
       }
-
+    }
+    else {
+      res.status(400).send({ message: 'Login or password is incorrect' });
     }
 
   }
@@ -59,5 +61,40 @@ exports.login = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  res.send(' Yeah! I\'m logged')
+  try {
+    if ( req.session.user && req.session.user.id ) {
+      const user = await User.findById(req.session.user.id);
+      if (user) {
+        const userData = { user: user.login, userId: user._id };
+        return res.json(userData);
+      }
+      else {
+        res.status(401).send({ message: 'User not found' });
+      }
+    }
+  }
+  catch (err) {
+    res.status(500).send({ massage: err })
+  }
+};
+
+exports.logout = async (req, res) => {
+  if (process.env.NODE_ENV !== 'production') {
+    try {
+      await Session.deleteMany({})
+      res.status(200).send({ message:'You logged out' });
+    }
+    catch (err) {
+      res.status(401).send({ massage: err })
+    }
+  }
+  else {
+    if (req.session){
+      req.session.destroy()
+      res.status(200).send({ message: 'You logged out' });
+    }
+    else {
+      res.status(401).send({ message: 'You are not logged in' });
+    }
+  }
 };
