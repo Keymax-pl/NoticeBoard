@@ -7,7 +7,8 @@ const fs = require("fs");
 exports.register = async (req, res) => {
   try {
     const { login, password, phoneNumber } = req.body;
-    const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
+    const fileType = req.file ? await getImageFileType(req.file) : 'unknown';+
+    console.log(login, password, phoneNumber, req.file, fileType);
 
     if (login && typeof login === 'string' && password && typeof password === 'string' && phoneNumber && req.file && ['image/png', 'image/jpeg', 'image/gif'].includes(fileType)) {
       const userWithLogin = await User.findOne({ login});
@@ -21,7 +22,7 @@ exports.register = async (req, res) => {
       res.status(200).send({ message: 'User created successfully' + ' ' + user.login });
 
     } else {
-      res.status(400).send({ message: 'Bad request' })
+      res.status(400).send({ message: 'Bad request' });
     }
   }
   catch (err) {

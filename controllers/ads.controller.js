@@ -59,38 +59,52 @@ exports.addNewAd = async (req, res) => {
 
 exports.updateAd = async (req, res) => {
   try {
-    const { title, text, date, price, location, user } = req.body;
-    if (!title || !text || !price || !location || !user) {
-      return res.status(400).json({ message: 'Required fields are missing' });
-    }
-
-    const ad = await Ad.findById(req.params.id);
-    if (!ad) {
-      return res.status(404).json({ message: 'The ad was not found' });
-    }
-    if (ad.user !== req.user.id) {
-      return res.status(403).json({ message: 'You do not have permission to edit this ad' });
-    }
-
-    ad.title = title;
-    ad.text = text;
-    ad.price = price;
-    ad.date = date;
-    ad.location = location;
-    ad.user = user;
-    if (req.file && ["image/png", "image/jpeg", "image/gif"].includes(fileType)) {
-      if (ad.img) {
-        fs.unlinkSync(`public/uploads/${ad.img}`);
+      let { title, text, date, price, location, user } = req.body;
+      const fileType = req.file ? await getImageFileType(req.file) : "unknown";
+  
+      const ad = await Advert.findById(req.params.id);
+      if (!ad) {
+        return res.status(404).send({ message: "Not found" });
       }
-      ad.img = req.file.filename;
+  
+      if (title && text && date && price && location && user) {
+        if (
+          !(title.length >= 10 && title.length <= 50) ||
+          !(text.length >= 20 && text.length <= 1000)
+        ) {
+          if (req.file) {
+            fs.unlinkSync(`public/uploads/${req.file.filename}`);
+          }
+          return res.status(400).send({ message: "Wrong input!" });
+        }
+  
+        ad.title = title;
+        ad.text = text;
+        ad.date = date;
+        ad.price = price;
+        ad.location = location;
+        ad.user = user;
+  
+        if (
+          req.file &&
+          ["image/png", "image/jpeg", "image/gif"].includes(fileType)
+        ) {
+          if (adv.img) {
+            fs.unlinkSync(`public/uploads/${adv.img}`);
+          }
+          adv.img = req.file.filename;
+        }
+  
+        await adv.save();
+        return res.status(200).send({ message: "OK", adv });
+      } else {
+        return res.status(400).send({ message: "Missing fields" });
+      }
+    } catch (err) {
+      return res.status(500).send({ message: err });
     }
-    await ad.save();
+}
 
-    res.json({ message: 'The ad has been updated successfully' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 
 
   exports.removeAd = async (req, res) => {
@@ -106,3 +120,18 @@ exports.updateAd = async (req, res) => {
       res.status(500).json({ message: err })
     }
   };
+
+  exports.searchAd = async (req, res) => {
+    try {
+      const ad = await Ad.find({ title: { $regex: req.params.searchPhrase, $options: 'i' } });
+  
+      if (ad.length === 0) {
+        return res.status(404).send({ message: "Not found" });
+      }
+  
+      res.json(ad);
+    } catch (err) {
+      res.status(500).send({ message: err });
+    }
+  };
+  
