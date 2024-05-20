@@ -11,7 +11,6 @@ const NavBar = () => {
             <Nav className="ms-auto">
               <Nav.Link as={NavLink} to="/" activeclassname="active">Home</Nav.Link>
               <Nav.Link as={NavLink} to="/add" activeclassname="active">Add Ad</Nav.Link>
-              <Nav.Link as={NavLink} to="/edit/:id" activeclassname="active">Ad Edit</Nav.Link>
               <Nav.Link as={NavLink} to="/logout" activeclassname="active">Sign out</Nav.Link>
               <Nav.Link as={NavLink} to="/login" activeclassname="active">login in</Nav.Link>
               <Nav.Link as={NavLink} to="/register" activeclassname="active">Register</Nav.Link>

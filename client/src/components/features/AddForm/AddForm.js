@@ -13,7 +13,7 @@ const AddForm = () => {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [price, setPrice] = useState("");
-  const [publishDate, setPublishDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
   const [location, setLocation] = useState("");
   const [image, setImage] = useState(null);
   const [status, setStatus] = useState(null);
@@ -24,7 +24,7 @@ const AddForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!title || !text || !price || !publishDate || !location || !image) {
+    if (!title || !text || !price || !date || !location || !image) {
       setStatus("clientError");
       return;
     }
@@ -32,7 +32,7 @@ const AddForm = () => {
     const fd = new FormData();
     fd.append("title", title);
     fd.append("text", text);
-    fd.append("publishDate", publishDate.toISOString());
+    fd.append("date", date.toISOString());
     fd.append("price", price);
     fd.append("location", location);
     fd.append("image", image);
@@ -131,8 +131,8 @@ const AddForm = () => {
         <Form.Group className="mb-4">
           <Form.Label>Published date</Form.Label>
           <DatePicker
-            selected={publishDate}
-            onChange={(date) => setPublishDate(date)}
+            selected={date}
+            onChange={(date) => setDate(date)}
           />
         </Form.Group>
 

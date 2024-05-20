@@ -76,7 +76,7 @@ const SingleAd = () => {
 
               {loggedUser && (
                 <div className="d-flex justify-content-between">
-                  <Link to={`/ads/edit/${id}`}>
+                  <Link to={`/edit/${id}`}>
                     <Button variant="outline-success m-1">Edit ad</Button>
                   </Link>
                   <Button onClick={handleShow} variant="outline-danger m-1">

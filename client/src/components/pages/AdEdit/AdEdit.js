@@ -22,7 +22,7 @@ const AdEdit = () => {
   const [title, setTitle] = useState(adData.title || "");
   const [text, setText] = useState(adData.text || "");
   const [price, setPrice] = useState(adData.price || "");
-  const [publishDate, setPublishDate] = useState(adData.publishDate ? new Date(adData.publishDate) : new Date());
+  const [date, setDate] = useState(adData.date ? new Date(adData.date) : new Date());
   const [location, setLocation] = useState(adData.location || "");
   const [image, setImage] = useState(adData.image || null);
   
@@ -37,8 +37,7 @@ const AdEdit = () => {
     fd.append("price", price);
     fd.append("location", location);
     fd.append("image", image);
-    fd.append("publishDate", publishDate);
-    fd.append("user", user.id);
+    fd.append("date", date);
     
     const options = {
       method: "PUT",
@@ -122,8 +121,8 @@ const AdEdit = () => {
           <Form.Group className="mb-3" controlId="formDate">
             <Form.Label>Date</Form.Label>
             <DatePicker
-              selected={publishDate}
-              onChange={(date) => setPublishDate(date)}
+              selected={date}
+              onChange={(date) => setDate(date)}
             />
           </Form.Group>
 

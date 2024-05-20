@@ -4,11 +4,10 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loadAdsRequest, getAllAds } from "../../../redux/adsRedux";
 import AllAd from "../../features/AllAd/AllAd";
-import Search from "./SearchResults";
+import Search from "./Search";
 
 const SearchResults = () => {
   const { searchPhrase } = useParams();
-  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const ads = useSelector(getAllAds);
   const dispatch = useDispatch();
@@ -21,14 +20,10 @@ const SearchResults = () => {
         setLoading(false);
       });
   }, [dispatch]);
-  
 
-  useEffect(() => {
-    const filteredAds = ads.filter((ad) =>
-      ad.title.toLowerCase().includes(searchPhrase.toLowerCase())
-    );
-    setData(filteredAds);
-  }, [ads, searchPhrase]);
+  const filteredAds = ads.filter((ad) =>
+    ad.title.toLowerCase().includes(searchPhrase.toLowerCase())
+  );
 
   return (
     <div>
@@ -38,7 +33,7 @@ const SearchResults = () => {
         <div>
           <h2 className="text-center my-3">Search results</h2>
           <Row className="justify-content-between">
-            {data.map((ad) => (
+            {filteredAds.map((ad) => (
               <AllAd key={ad._id} {...ad} />
             ))}
           </Row>

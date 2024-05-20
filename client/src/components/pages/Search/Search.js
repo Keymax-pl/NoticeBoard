@@ -1,17 +1,21 @@
 import React, { useState } from "react";
-
 import { Button, InputGroup, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
   const [searchPhrase, setSearchPhrase] = useState("");
+  const navigate = useNavigate();
 
   const handleSearch = () => {
-    window.location.href = `/search/${searchPhrase}`;
+    if (searchPhrase.trim()) {
+      navigate(`/search/${searchPhrase}`);
+    }
   };
+
   return (
-    <div className="d-flex justify-content-center mt-3 mb-5 ">
+    <div className="d-flex justify-content-center mt-3 mb-5">
       <div>
-        <InputGroup className="">
+        <InputGroup>
           <Form.Control
             className="shadow-none"
             type="text"
