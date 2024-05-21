@@ -21,21 +21,28 @@ const SearchResults = () => {
       });
   }, [dispatch]);
 
+  console.log("searchPhrase:", searchPhrase);
+  console.log("ads:", ads);
+
   const filteredAds = ads.filter((ad) =>
     ad.title.toLowerCase().includes(searchPhrase.toLowerCase())
   );
 
+  console.log("filteredAds:", filteredAds);
+
   return (
     <div>
       <Search />
-      {loading && <Spinner />}
+      {loading && <Spinner animation="border" />}
       {!loading && (
         <div>
           <h2 className="text-center my-3">Search results</h2>
           <Row className="justify-content-between">
-            {filteredAds.map((ad) => (
-              <AllAd key={ad._id} {...ad} />
-            ))}
+            {filteredAds.length > 0 ? (
+              filteredAds.map((ad) => <AllAd key={ad._id} {...ad} />)
+            ) : (
+              <p className="text-center">No results found for "{searchPhrase}"</p>
+            )}
           </Row>
         </div>
       )}

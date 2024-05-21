@@ -65,28 +65,38 @@ exports.addNewAd = async (req, res) => {
 
 exports.updateAd = async (req, res) => {
   try {
-    const updatedAd = await Ad.findByIdAndUpdate(
-      req.params.id,
-      {
-        title: req.body.title,
-        text: req.body.text,
-        price: req.body.price,
-        location: req.body.location,
+    const { title, text, price, location, date } = req.body;
+    const fileType = req.file ? await getImageFileType(req.file) : "unknown";
 
-        ...(req.file && { image: req.file.filename }),
-      },
-      { new: true }
-    );
-
-    if (req.file) {
-      fs.unlinkSync(`./public/uploads/${updatedAd.image}`);
+    if (!title || !text || !price || !location) {
+      if (req.file) fs.unlinkSync(`public/uploads/${req.file.filename}`);
+      return res.status(400).json({ message: 'Required fields are missing' });
     }
 
+    if (req.file && !["image/png", "image/jpeg", "image/gif"].includes(fileType)) {
+      fs.unlinkSync(`public/uploads/${req.file.filename}`);
+      return res.status(400).json({ message: 'Invalid file type' });
+    }
+
+    const ad = await Ad.findById(req.params.id);
+    if (!ad) return res.status(404).json({ message: 'Not found' });
+
+    const updatedData = {
+      title,
+      text,
+      price,
+      location,
+      ...(req.file && { image: req.file.filename }),
+    };
+
+    Object.assign(ad, updatedData);
+    const updatedAd = await ad.save();
+
     res.json(updatedAd);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-},
+};
 
 exports.removeAd = async (req, res) => {
   try {
@@ -107,14 +117,12 @@ exports.removeAd = async (req, res) => {
 
 exports.searchAd = async (req, res) => {
   try {
-    const ads = await Ad.find({ title: { $regex: req.params.searchPhrase, $options: 'i' } });
+    const searchPhrase = req.params.searchPhrase;
 
-    if (ads.length === 0) {
-      return res.status(404).json({ message: "Not found" });
-    }
-
-    res.json(ads);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    const matchingAds = await Ad.find({ title: { $regex: searchPhrase } });
+    res.json(matchingAds);
+    
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

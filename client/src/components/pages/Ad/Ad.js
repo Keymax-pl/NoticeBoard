@@ -8,11 +8,6 @@ import { getUser } from "../../../redux/usersRedux";
 import { useState } from "react";
 import { Button, Card, Col, Modal } from "react-bootstrap";
 
-const dateString = "Tue Feb 06 2024 10:04:00 GMT+0100";
-const date = new Date(dateString);
-const formattedDate = format(date, "dd.MM.yyyy");
-console.log(formattedDate); // "06.02.2024 10:04:00"
-
 const SingleAd = () => {
   const { id } = useParams();
   const adData = useSelector((state) => getAdById(state, id));
@@ -62,7 +57,7 @@ const SingleAd = () => {
                 {adData.text}
               </div>
 
-              <p>Published: {format(adData.date, "dd.MM.yyyy")}</p>
+              <p>Published: {format(new Date(adData.date), "dd.MM.yyyy")}</p>
               <h5>Seller info</h5>
 
               <div>
@@ -76,7 +71,7 @@ const SingleAd = () => {
 
               {loggedUser && (
                 <div className="d-flex justify-content-between">
-                  <Link to={`/edit/${id}`}>
+                  <Link to={`/ads/edit/${id}`}>
                     <Button variant="outline-success m-1">Edit ad</Button>
                   </Link>
                   <Button onClick={handleShow} variant="outline-danger m-1">
