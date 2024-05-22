@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Row, Spinner } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Row, Spinner, Col, Card, Button } from "react-bootstrap";
+import { useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loadAdsRequest, getAllAds } from "../../../redux/adsRedux";
-import AllAd from "../../features/AllAd/AllAd";
 import Search from "./Search";
+import { IMG_URL } from "../../../config";
 
 const SearchResults = () => {
   const { searchPhrase } = useParams();
@@ -37,13 +37,30 @@ const SearchResults = () => {
       {!loading && (
         <div>
           <h2 className="text-center my-3">Search results</h2>
-          <Row className="justify-content-between">
-            {filteredAds.length > 0 ? (
-              filteredAds.map((ad) => <AllAd key={ad._id} {...ad} />)
-            ) : (
-              <p className="text-center">No results found for "{searchPhrase}"</p>
-            )}
-          </Row>
+          {filteredAds.length > 0 ? (
+            filteredAds.map((ad) => (
+              <Row key={ad._id} className="mb-4 justify-content-center">
+                <Col xs={12} md={8} lg={6}>
+                  <Card style={{ width: "100%" }}>
+                    <Card.Img
+                      variant="top"
+                      src={IMG_URL + ad.image}
+                    />
+                    <Card.Body>
+                      <Card.Title>{ad.title}</Card.Title>
+                      <Card.Text className="mb-3 text-muted">{ad.location}</Card.Text>
+
+                      <Link to={`/ads/${ad._id}`}>
+                        <Button variant="primary">Read more...</Button>
+                      </Link>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            ))
+          ) : (
+            <p className="text-center">No results found for "{searchPhrase}"</p>
+          )}
         </div>
       )}
     </div>
