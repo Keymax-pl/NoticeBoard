@@ -36,6 +36,10 @@ const SingleAd = () => {
   };
 
   if (!adData) return <Navigate to={"/"} />;
+  
+  // Log adData to verify the structure and values
+  console.log("adData:", adData);
+
   return (
     <div>
       <div className="d-flex justify-content-center">
@@ -57,20 +61,25 @@ const SingleAd = () => {
                 {adData.text}
               </div>
 
-              <p>Published: {format(new Date(adData.date), "dd.MM.yyyy")}</p>
+              <p><b>Published:</b> {format(new Date(adData.date), "dd.MM.yyyy")}</p>
               <h5>Seller info</h5>
 
-              <div>
-                <img
-                  src={IMG_URL + adData.avatar}
-                  alt="user avatar"
-                  className="me-1"
-                ></img>
-                <p> {adData.login}</p>
+              <div className="d-flex align-items-center">
+                {adData.user.avatar ? (
+                  <img
+                    src={IMG_URL + adData.user.avatar}
+                    alt="user avatar"
+                    className="me-2 rounded-circle"
+                    style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                  />
+                ) : (
+                  <div className="me-2 rounded-circle" style={{ width: "50px", height: "50px", backgroundColor: "#ccc" }}></div>
+                )}
+                <p className="mb-0"> {adData.login}</p>
               </div>
 
               {loggedUser && (
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between mt-3">
                   <Link to={`/ads/edit/${id}`}>
                     <Button variant="outline-success m-1">Edit ad</Button>
                   </Link>

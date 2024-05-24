@@ -46,7 +46,7 @@ const AdEdit = () => {
 
     fetch(`${API_URL}/api/ads/${id}`, options)
       .then((res) => {
-        if (res.status === 201) {
+        if (res.status === 200) {
           console.log("Response:", res);
           navigate("/");
           dispatch(loadAdsRequest());
